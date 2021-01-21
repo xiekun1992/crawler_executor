@@ -18,7 +18,13 @@ function createWindow(url) {
   }
   session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
     // console.log(details)
-    callback({})
+    if (details.resourceType == 'mainFrame') { // image, script, mainFrame, stylesheet
+      callback({})
+    } else {
+      callback({
+        cancel: true
+      })
+    }
   })
 
   return win
