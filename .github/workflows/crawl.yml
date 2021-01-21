@@ -4,7 +4,7 @@
 name: schedule crawl
 on:
   schedule:
-    - cron: 1/1 * * * *
+    - cron: */1 * * * *
 
 jobs:
   build:
