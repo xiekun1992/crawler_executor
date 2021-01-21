@@ -4,7 +4,7 @@
 name: schedule crawl
 on:
   schedule:
-    - cron: 10 * * * *
+    - cron: 1/ * * * *
 
 jobs:
   build:
@@ -13,7 +13,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
+        # node-version: [10.x, 12.x, 14.x, 15.x]
+        node-version: [12.16]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
