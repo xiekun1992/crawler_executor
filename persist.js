@@ -3,42 +3,41 @@ const {
   Model,
   DataTypes
 } = require('sequelize')
-const sequelize = new Sequelize('crawl', 'root', 'root', {
-    host: '192.168.128.3',
-    port: 3306,
-    dialect: 'mariadb'
-  }
-)
 
 class Hyperlink extends Model {}
 class RawText extends Model {}
 class DetailPage extends Model {}
 
-Hyperlink.init({
-  address: DataTypes.STRING,
-  type: DataTypes.STRING
-}, {
-  sequelize
-})
-
-RawText.init({
-  text: DataTypes.STRING
-}, {
-  sequelize
-})
-
-DetailPage.init({
-  title: DataTypes.STRING,
-  address: DataTypes.STRING,
-  done: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
-  }
-}, {
-  sequelize
-})
-
-function connect() {
+function connect(dbConfig) {
+  const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
+      host: dbConfig.host,
+      port: dbConfig.port,
+      dialect: 'mariadb'
+    }
+  )
+  Hyperlink.init({
+    address: DataTypes.STRING,
+    type: DataTypes.STRING
+  }, {
+    sequelize
+  })
+  
+  RawText.init({
+    text: DataTypes.STRING
+  }, {
+    sequelize
+  })
+  
+  DetailPage.init({
+    title: DataTypes.STRING,
+    address: DataTypes.STRING,
+    done: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
+  }, {
+    sequelize
+  })
   return sequelize.sync({
     alter: {
       drop: false

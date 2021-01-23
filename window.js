@@ -3,8 +3,9 @@ const {
 } = require('electron')
 
 let win
-function createWindow(url) {
+function createWindow(url, showWindow = true) {
   win = new BrowserWindow({
+    show: showWindow,
     width: 1280,
     height: 720,
     webPreferences: {

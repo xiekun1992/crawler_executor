@@ -1,0 +1,18 @@
+{
+  "db": {
+    "prod": {
+      "database": "crawl",
+      "username": "root",
+      "password": "root",
+      "host": "localhost",
+      "port": 3306
+    },
+    "dev": {
+      "database": "crawl",
+      "username": "root",
+      "password": "root",
+      "host": "192.168.128.3",
+      "port": 3306
+    }
+  }
+}

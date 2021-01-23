@@ -11,17 +11,28 @@ const {
   DetailPage,
 } = require('./persist')
 
+global.argv = {
+  dev: process.argv.includes('--dev'),
+  prod: process.argv.includes('--prod')
+}
+
 // list page
 let pageIndex = 1
 const entryUrl = `https://k6.7086xx.rocks/pw/thread.php?fid=3&page=${pageIndex}`
 let isListPage = true
 let detailPages = []
 let crawlingDetailPage
+let dbConfig
+if (global.argv.dev) {
+  dbConfig = require('./config.json').db.dev
+} else if (global.argv.prod) {
+  dbConfig = require('./config.json').db.prod
+}
 
 app.whenReady().then(() => {
-  connect().then(() => {
+  connect(dbConfig).then(() => {
   
-    const win = createWindow(entryUrl)
+    const win = createWindow(entryUrl, !global.argv.dev)
     win.webContents.on('dom-ready', async () => {
     try {
       if (isListPage) {

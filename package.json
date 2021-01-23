@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prod": "electron . --prod",
+    "dev": "electron . --dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
