@@ -9,11 +9,13 @@ const {
   Hyperlink,
   RawText,
   DetailPage,
+  Record
 } = require('./persist')
 
 global.argv = {
   dev: process.argv.includes('--dev'),
-  prod: process.argv.includes('--prod')
+  prod: process.argv.includes('--prod'),
+  hide: process.argv.includes('--hide')
 }
 
 // list page
@@ -30,9 +32,17 @@ if (global.argv.dev) {
 }
 
 app.whenReady().then(() => {
-  connect(dbConfig).then(() => {
-  
-    const win = createWindow(entryUrl, !global.argv.dev)
+  connect(dbConfig).then(async () => {
+    await Record.findOrCreate({
+      where: {
+        id: 1
+      },
+      defaults: {
+        pageIndex
+      }
+    })
+
+    const win = createWindow(entryUrl, !global.argv.hide)
     win.webContents.on('dom-ready', async () => {
     try {
       if (isListPage) {
@@ -137,6 +147,15 @@ app.whenReady().then(() => {
         })
         page.done = true
         await page.save()
+        const pageIndexRecord = await Record.findOne({
+          where: {
+            id: 1
+          }
+        })
+        if (pageIndexRecord) {
+          pageIndexRecord.pageIndex = pageIndex
+          await pageIndexRecord.save()
+        }
         // goto detail page
         if (detailPages.length > 0) {
           isListPage = false

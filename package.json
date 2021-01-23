@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prod": "electron . --prod",
+    "prod": "electron . --prod --hide",
     "dev": "electron . --dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

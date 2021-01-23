@@ -7,6 +7,7 @@ const {
 class Hyperlink extends Model {}
 class RawText extends Model {}
 class DetailPage extends Model {}
+class Record extends Model {}
 
 function connect(dbConfig) {
   const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
@@ -38,6 +39,11 @@ function connect(dbConfig) {
   }, {
     sequelize
   })
+  Record.init({
+    pageIndex: DataTypes.INTEGER
+  }, {
+    sequelize
+  })
   return sequelize.sync({
     alter: {
       drop: false
@@ -52,5 +58,6 @@ module.exports = {
   Hyperlink,
   RawText,
   DetailPage,
+  Record,
   connect
 }
