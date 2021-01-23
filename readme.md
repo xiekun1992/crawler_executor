@@ -67,4 +67,4 @@ npm ERR!     /root/.npm/_logs/2021-01-23T13_58_52_156Z-debug.log
 [2095780:0123/151216.119860:FATAL:electron_main_delegate.cc(253)] Running as root without --no-sandbox is not supported. See https://crbug.com/638180.
 /root/node-app/node-v14.15.4-linux-x64/lib/node_modules/electron/dist/electron exited with signal SIGTRAP
 ```
-`root@vultr:~/node-app/crawler_executor# xvfb-run electron . --no-sandbox`
+`root@vultr:~/node-app/crawler_executor# xvfb-run -a electron . --no-sandbox`
