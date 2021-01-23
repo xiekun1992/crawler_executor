@@ -24,7 +24,7 @@ function connect(dbConfig) {
   })
   
   RawText.init({
-    text: DataTypes.STRING
+    text: DataTypes.TEXT
   }, {
     sequelize
   })
