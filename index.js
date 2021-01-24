@@ -16,7 +16,7 @@ global.argv = {
   dev: process.argv.includes('--dev'), // use production config
   prod: process.argv.includes('--prod'), // use production config
   hide: process.argv.includes('--hide-win'), // hide browser window
-  dropTables: process.argv.includes('--drop-tables') // drop existing databases
+  dropTables: process.argv.includes('--drop-tables') // drop existing tables
 }
 
 // list page
