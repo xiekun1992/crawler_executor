@@ -9,7 +9,7 @@ class RawText extends Model {}
 class DetailPage extends Model {}
 class Record extends Model {}
 
-function connect(dbConfig) {
+async function connect(dbConfig, dropTables) {
   const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, {
       host: dbConfig.host,
       port: dbConfig.port,
@@ -17,6 +17,7 @@ function connect(dbConfig) {
     }
   )
   Hyperlink.init({
+    rawTextId: DataTypes.INTEGER,
     address: DataTypes.STRING,
     type: DataTypes.STRING
   }, {
@@ -24,6 +25,7 @@ function connect(dbConfig) {
   })
   
   RawText.init({
+    detailPageId: DataTypes.INTEGER,
     text: DataTypes.TEXT
   }, {
     sequelize
@@ -44,14 +46,18 @@ function connect(dbConfig) {
   }, {
     sequelize
   })
-  return sequelize.sync({
+  if (dropTables) {
+    await sequelize.drop({
+      cascade: true
+    })
+  }
+  await sequelize.sync({
     alter: {
-      drop: false
+      drop: true
     }
-  }).then((value) => {
-    console.log('database connected')
-    return value
   })
+  console.log('database connected')
+  return
 }
 
 module.exports = {

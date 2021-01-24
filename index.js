@@ -13,9 +13,10 @@ const {
 } = require('./persist')
 
 global.argv = {
-  dev: process.argv.includes('--dev'),
-  prod: process.argv.includes('--prod'),
-  hide: process.argv.includes('--hide')
+  dev: process.argv.includes('--dev'), // use production config
+  prod: process.argv.includes('--prod'), // use production config
+  hide: process.argv.includes('--hide-win'), // hide browser window
+  dropTables: process.argv.includes('--drop-tables') // drop existing databases
 }
 
 // list page
@@ -32,19 +33,18 @@ if (global.argv.dev) {
   dbConfig = require('./config.json').db.prod
 }
 
-app.whenReady().then(() => {
-  connect(dbConfig).then(async () => {
-    await Record.findOrCreate({
-      where: {
-        id: 1
-      },
-      defaults: {
-        pageIndex
-      }
-    })
-
-    win = createWindow(entryUrl, !global.argv.hide)
-    win.webContents.on('dom-ready', async () => {
+app.whenReady().then(async () => {
+  await connect(dbConfig, global.argv.dropTables)
+  await Record.findOrCreate({
+    where: {
+      id: 1
+    },
+    defaults: {
+      pageIndex
+    }
+  })  
+  win = createWindow(entryUrl, !global.argv.hide)
+  win.webContents.on('dom-ready', async () => {
     try {
       if (isListPage) {
         crawlListPage()
@@ -54,8 +54,6 @@ app.whenReady().then(() => {
     } catch(e) {
       console.log('error occur', e)
     }
-  })
-
   })
 })
 
@@ -129,27 +127,30 @@ async function crawlDetailPage() {
     })())
   `)
   console.log(detailResults) // evaluate and persist
-  for (const item of detailResults) {
-    await RawText.create({
-      text: item.text.join('\n')
-    })
-    await Hyperlink.create({
-      address: item.link,
-      type: 'link'
-    })
-    for (const imgsrc of item.image) {
-      await Hyperlink.create({
-        address: imgsrc,
-        type: 'image'
-      })
-    }
-  }
   const page = await DetailPage.findOne({
     where: {
       title: crawlingDetailPage.title,
       address: crawlingDetailPage.href
     }
   })
+  for (const item of detailResults) {
+    const rawText = await RawText.create({
+      detailPageId: page.id,
+      text: item.text.join('\n')
+    })
+    await Hyperlink.create({
+      rawTextId: rawText.id,
+      address: item.link,
+      type: 'link'
+    })
+    for (const imgsrc of item.image) {
+      await Hyperlink.create({
+        rawTextId: rawText.id,
+        address: imgsrc,
+        type: 'image'
+      })
+    }
+  }
   page.done = true
   await page.save()
   const pageIndexRecord = await Record.findOne({
